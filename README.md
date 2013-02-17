@@ -3,6 +3,8 @@
 
 Oauth2.0 npm package for Rakuten OAuth
 
+## Introduction
+
 [Passport](http://passportjs.org/) strategy for authenticating with [Rakuten OAuth](https://webservice.rakuten.co.jp/document/oauth) using the OAuth 2.0 API
 
 This module can be used with passport in Node.js.
