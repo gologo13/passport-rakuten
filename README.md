@@ -16,6 +16,20 @@ You can integrate into below applications or frameworks.
 
     $ npm install passport-rakuten
 
+## Preparation
+
+edit config.js to setup your application.
+
+    $ vim config.js
+	 /**
+	 * Config
+	 */
+	module.exports = {
+	    client_id: "your_client_id",
+	    client_secret: "your_client_secret",
+	    redirect_uri: "your_redirect_uri"
+	}
+
 ## Usage
 
 ### Configuration Strategy
