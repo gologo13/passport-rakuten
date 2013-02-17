@@ -1,6 +1,6 @@
 {
     "name" : "passport-rakuten",
-    "version" : "1.0.0",
+    "version" : "1.0.1",
     "description" : "Rakuten OAuth authentication strategy for passport",
     "keywords" : ["passport", "rakuten", "auth", "authentication", "identity", "oauth2"],
     "repository" : {
