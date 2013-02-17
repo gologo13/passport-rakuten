@@ -6,7 +6,7 @@ var RakutenStrategy = require('passport-rakuten/strategy')
   , Config = require('../config');
 
 // constant
-var PROFILE_PAGE = 'https://app.rakuten.co.jp/services/api/FavoriteBookmark/List/20120627?'
+var BOOKMARK_PAGE = 'https://app.rakuten.co.jp/services/api/FavoriteBookmark/List/20120627?'
 
 // dummy data
 var CLIENT_ID     = Config.client_id;
@@ -61,28 +61,9 @@ vows.describe('RakutenStrategy').addBatch({
         assert.isUndefined(params.display);
       }
     },
-
-    'and display set to mobile': {
-      topic: function (strategy) {
-        var mockRequest = {},
-            url;
-
-        // Stub strategy.redirect()
-        var self = this;
-        strategy.redirect = function (location) {
-          self.callback(null, location)
-        };
-        strategy.authenticate(mockRequest, { display: 'mobile' });
-      },
-
-      'sets authorization param to mobile': function(err, location) {
-        var params = url.parse(location, true).query;
-        assert.equal(params.display, 'mobile');
-      }
-    }
   },
 
-  'strategy when loading user profile': {
+  'strategy when loading user bookmark': {
     topic: function() {
       var strategy = new RakutenStrategy({
           clientID    : CLIENT_ID,
@@ -94,21 +75,21 @@ vows.describe('RakutenStrategy').addBatch({
 
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
-        if (url == PROFILE_PAGE) {
-          var body = '{"id":"500308595","name":"Jared Hanson","first_name":"Jared","last_name":"Hanson","link":"http:\\/\\/www.facebook.com\\/jaredhanson","username":"jaredhanson","gender":"male","email":"jaredhanson\\u0040example.com"}';
+        if (url == BOOKMARK_PAGE) {
+          var body = '{"summary":{"count":1,"hits":1,"pageCount":1},"items":[{"item":{"bookmarkId":"4709771","itemCode":"book:11024900","productId":"","shopName":"楽天ブックス","shopUrl":"http://www.rakuten.co.jp/book","itemName":"マネジメント [ ピーター・ファーディナンド・ドラッカー ]","itemUrl":"http://item.rakuten.co.jp/book/1401537","smallImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=64x64","mediumImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=128x128","reviewCount":590,"reviewUrl":"http://review.rakuten.co.jp/item/1/213310_11024900/1.1/","pointRate":0,"reviewAverage":"4.25","postageFlag":0,"taxFlag":0,"affiliateUrl":""}}]}';
           callback(null, body, undefined);
         } else {
-          callback(new Error('Incorrect user profile URL'));
+          callback(new Error('Incorrect user bookmark URL'));
         }
       }
       return strategy;
     },
 
-    'when told to load user profile': {
+    'when told to load user bookmark': {
       topic: function(strategy) {
         var self = this;
-        function done(err, profile) {
-          self.callback(err, profile);
+        function done(err, bookmark) {
+          self.callback(err, bookmark);
         }
         process.nextTick(function () {
           strategy.userProfile(ACCESS_TOKEN, done);
@@ -117,31 +98,24 @@ vows.describe('RakutenStrategy').addBatch({
       'should not error' : function(err, req) {
         assert.isNull(err);
       },
-      'should load profile' : function(err, profile) {
-        assert.equal(profile.provider, 'rakuten');
-        assert.equal(profile.id, '500308595');
-        assert.equal(profile.username, 'jaredhanson');
-        assert.equal(profile.displayName, 'Jared Hanson');
-        assert.equal(profile.name.familyName, 'Hanson');
-        assert.equal(profile.name.givenName, 'Jared');
-        assert.equal(profile.gender, 'male');
-        assert.equal(profile.profileUrl, 'http://www.facebook.com/jaredhanson');
-        assert.lengthOf(profile.emails, 1);
-        assert.equal(profile.emails[0].value, 'jaredhanson@example.com');
-        assert.isUndefined(profile.photos);
+      'should load bookmark' : function(err, bookmark) {
+        assert.equal(bookmark.provider, 'rakuten');
+        assert.equal(bookmark.summary.count, '1');
+        assert.equal(bookmark.summary.hits, '1');
+        assert.equal(bookmark.summary.pageCount, '1');
       },
-      'should set raw property' : function(err, profile) {
-        assert.ok('_raw' in profile);
-        assert.isString(profile._raw);
+      'should set raw property' : function(err, bookmark) {
+        assert.ok('_raw' in bookmark);
+        assert.isString(bookmark._raw);
       },
-      'should set json property' : function(err, profile) {
-        assert.ok('_json' in profile);
-        assert.isObject(profile._json);
+      'should set json property' : function(err, bookmark) {
+        assert.ok('_json' in bookmark);
+        assert.isObject(bookmark._json);
       },
     },
   },
-  
-  'strategy when loading user profile with profileURL option': {
+
+  'strategy when loading user bookmark with profileURL option': {
     topic: function() {
       var strategy = new RakutenStrategy({
           clientID    : CLIENT_ID,
@@ -150,50 +124,50 @@ vows.describe('RakutenStrategy').addBatch({
           scope : "openid"
       },
       function() {});
-      
+
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
-        if (url == PROFILE_PAGE) {
-          var body = '{"id":"500308595","name":"Jared Hanson","first_name":"Jared","last_name":"Hanson","link":"http:\\/\\/www.facebook.com\\/jaredhanson","username":"jaredhanson","gender":"male","email":"jaredhanson\\u0040example.com"}';
+        if (url == BOOKMARK_PAGE) {
+          var body = '{"summary":{"count":1,"hits":1,"pageCount":1},"items":[{"item":{"bookmarkId":"4709771","itemCode":"book:11024900","productId":"","shopName":"楽天ブックス","shopUrl":"http://www.rakuten.co.jp/book","itemName":"マネジメント [ ピーター・ファーディナンド・ドラッカー ]","itemUrl":"http://item.rakuten.co.jp/book/1401537","smallImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=64x64","mediumImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=128x128","reviewCount":590,"reviewUrl":"http://review.rakuten.co.jp/item/1/213310_11024900/1.1/","pointRate":0,"reviewAverage":"4.25","postageFlag":0,"taxFlag":0,"affiliateUrl":""}}]}';
           callback(null, body, undefined);
         } else {
-          callback(new Error('Incorrect user profile URL: ' + url));
+          callback(new Error('Incorrect user bookmark URL: ' + url));
         }
       }
-      
+
       return strategy;
     },
-    
-    'when told to load user profile': {
+
+    'when told to load user bookmark': {
       topic: function(strategy) {
         var self = this;
-        function done(err, profile) {
-          self.callback(err, profile);
+        function done(err, bookmark) {
+          self.callback(err, bookmark);
         }
-        
+
         process.nextTick(function () {
           strategy.userProfile(ACCESS_TOKEN, done);
         });
       },
-      
       'should not error' : function(err, req) {
         assert.isNull(err);
       },
-      'should load profile' : function(err, profile) {
-        assert.equal(profile.provider, 'rakuten');
-        assert.equal(profile.id, '500308595');
-        assert.equal(profile.username, 'jaredhanson');
+      'should load bookmark' : function(err, bookmark) {
+        assert.equal(bookmark.provider, 'rakuten');
+        assert.equal(bookmark.summary.count, '1');
+        assert.equal(bookmark.summary.hits, '1');
+        assert.equal(bookmark.summary.pageCount, '1');
       },
-      'should set raw property' : function(err, profile) {
-        assert.isString(profile._raw);
+      'should set raw property' : function(err, bookmark) {
+        assert.isString(bookmark._raw);
       },
-      'should set json property' : function(err, profile) {
-        assert.isObject(profile._json);
+      'should set json property' : function(err, bookmark) {
+        assert.isObject(bookmark._json);
       },
     },
   },
-  
-  'strategy when loading user profile with mapped profile fields': {
+
+  'strategy when loading user bookmark with mapped bookmark fields': {
     topic: function() {
       var strategy = new RakutenStrategy({
           clientID    : CLIENT_ID,
@@ -206,21 +180,21 @@ vows.describe('RakutenStrategy').addBatch({
 
       // mock
       strategy._oauth2.getProtectedResource = function(url, accessToken, callback) {
-        if (url == PROFILE_PAGE) {
-          var body = '{"name":"\u5c71\u53e3\u6d0b\u5e73","given_name":"\u6d0b\u5e73","given_name#ja-Kana-JP":"\u30e8\u30a6\u30d8\u30a4","given_name#ja-Hani-JP":"\u6d0b\u5e73","family_name":"\u5c71\u53e3","family_name#ja-Kana-JP":"\u30e4\u30de\u30b0\u30c1","family_name#ja-Hani-JP":"\u5c71\u53e3","locale":"ja-JP","birthday":"1987","gender":"male"}';
+        if (url == BOOKMARK_PAGE) {
+          var body = '{"summary":{"count":1,"hits":1,"pageCount":1},"items":[{"item":{"bookmarkId":"4709771","itemCode":"book:11024900","productId":"","shopName":"楽天ブックス","shopUrl":"http://www.rakuten.co.jp/book","itemName":"マネジメント [ ピーター・ファーディナンド・ドラッカー ]","itemUrl":"http://item.rakuten.co.jp/book/1401537","smallImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=64x64","mediumImageUrl":"http://thumbnail.image.rakuten.co.jp/@0_mall/book/cabinet/0233/9784478410233.jpg?_ex=128x128","reviewCount":590,"reviewUrl":"http://review.rakuten.co.jp/item/1/213310_11024900/1.1/","pointRate":0,"reviewAverage":"4.25","postageFlag":0,"taxFlag":0,"affiliateUrl":""}}]}';
           callback(null, body, undefined);
         } else {
-          callback(new Error('Incorrect user profile URL: ' + url));
+          callback(new Error('Incorrect user bookmark URL: ' + url));
         }
       }
       return strategy;
     },
 
-    'when told to load user profile': {
+    'when told to load user bookmark': {
       topic: function(strategy) {
         var self = this;
-        function done(err, profile) {
-          self.callback(err, profile);
+        function done(err, bookmark) {
+          self.callback(err, bookmark);
         }
 
         process.nextTick(function () {
@@ -231,20 +205,19 @@ vows.describe('RakutenStrategy').addBatch({
       'should not error' : function(err, req) {
         assert.isNull(err);
       },
-      'should load profile' : function(err, profile) {
-        assert.equal(profile.provider, 'rakuten');
-        console.log(profile);
+      'should load bookmark' : function(err, bookmark) {
+        assert.equal(bookmark.provider, 'rakuten');
       },
-      'should set raw property' : function(err, profile) {
-        assert.isString(profile._raw);
+      'should set raw property' : function(err, bookmark) {
+        assert.isString(bookmark._raw);
       },
-      'should set json property' : function(err, profile) {
-        assert.isObject(profile._json);
+      'should set json property' : function(err, bookmark) {
+        assert.isObject(bookmark._json);
       },
     },
   },
 
-  'strategy when loading user profile and encountering an error': {
+  'strategy when loading user bookmark and encountering an error': {
     topic: function() {
       var strategy = new RakutenStrategy({
           clientID    : CLIENT_ID,
@@ -261,11 +234,11 @@ vows.describe('RakutenStrategy').addBatch({
       return strategy;
     },
 
-    'when told to load user profile': {
+    'when told to load user bookmark': {
       topic: function(strategy) {
         var self = this;
-        function done(err, profile) {
-          self.callback(err, profile);
+        function done(err, bookmark) {
+          self.callback(err, bookmark);
         }
 
         process.nextTick(function () {
@@ -279,8 +252,8 @@ vows.describe('RakutenStrategy').addBatch({
       'should wrap error in InternalOAuthError' : function(err, req) {
         assert.equal(err.constructor.name, 'InternalOAuthError');
       },
-      'should not load profile' : function(err, profile) {
-        assert.isUndefined(profile);
+      'should not load bookmark' : function(err, bookmark) {
+        assert.isUndefined(bookmark);
       },
     },
   },

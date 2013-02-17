@@ -1,9 +1,7 @@
-"use strict";
-
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , RakutenStrategy = require('./passport-rakuten/strategy');
+  , RakutenStrategy = require('passport-rakuten').RakutenStrategy;
 var Config = require('./config');
 
 var SCOPE = "rakuten_favoritebookmark_read";

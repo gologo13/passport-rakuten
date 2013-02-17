@@ -1,4 +1,4 @@
-# passport-yj
+# passport-rakuten
 ===========
 
 Oauth2.0 npm package for Rakuten OAuth
@@ -12,13 +12,13 @@ You can integrate into below applications or frameworks.
 
 ## Install
 
-    $ npm install passport-yj
+    $ npm install passport-rakuten
 
 ## Usage
 
 ### Configuration Strategy
 
-This YConnect passport module requires your application' id. 
+This Rakuten passport module requires your application' id.
 You can get this id from [Rakuten Web Service](http://webservice.rakuten.co.jp/)
 
 ### Authorization Endpoint
