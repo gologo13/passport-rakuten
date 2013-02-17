@@ -1,0 +1,32 @@
+{
+    "name" : "passport-rakuten",
+    "version" : "1.0.0",
+    "description" : "Rakuten OAuth authentication strategy for passport",
+    "keywords" : ["passport", "rakuten", "auth", "authentication", "identity", "oauth2"],
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/gologo13/passport-rakuten.git"
+    },
+    "bugs" : {
+        "url" : "git://github.com/gologo13/passport-rakuten.git/issues"
+    },
+    "license": [{
+        "type": "MIT",
+        "url" : "http://www.opensource.org/licenses/MIT"
+    }],
+    "main" : "./lib/passport-rakuten",
+    "dependencies":{
+        "pkginfo" : "0.2.x",
+        "passport-oauth" : "0.1.x"
+    },
+    "devDependencies": {
+        "vows": "0.6.x",
+        "passport": ">= 0.1.x"
+    },
+    "scripts" : {
+        "test" : "NODE_PATH=lib node_modules/.bin/vows test/*-test.js"
+    },
+    "engines" : {
+        "node" : ">= 0.4.0"
+    }
+}

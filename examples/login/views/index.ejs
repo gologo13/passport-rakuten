@@ -1,0 +1,19 @@
+<% if (!user) { %>
+	<h2>Welcome! Please log in.</h2>
+    <a href="/auth/rakuten"><img src="login-with-yahoo-japan-id.gif"></a>
+<% } else { %>
+	<h2>Your Bookmark Information</h2>
+      <h3>Info</h3>
+      <ul>
+      	<li>count: <%= user.summary.count %> </li>
+      	<li>hits: <%= user.summary.hits %> </li>
+      	<li>pageCount: <%= user.summary.pageCount %> </li>
+      </ul>
+      <h3>Bookmarks</h3>
+      <ul>
+        <li><%= user.items[0].item.shopName %></li>
+        <li><%= user.items[0].item.itemName %></li>
+        <li><%= user.items[0].item.itemUrl %></li>
+        <li><img src="<%= user.items[0].item.mediumImageUrl %>"></li>
+      </ul>
+<% } %>
