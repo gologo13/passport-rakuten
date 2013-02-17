@@ -40,6 +40,7 @@ You can get this id from [Rakuten Web Service](http://webservice.rakuten.co.jp/)
 ### Authorization Endpoint
 
     var passport = require('passport');
+    var RakutenStrategy = require('passport-rakuten').RakutenStrategy;
     
 	passport.use(new RakutenStrategy({
 	    clientID     : <RAKUTEN_APP_ID>,
