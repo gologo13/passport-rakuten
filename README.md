@@ -1,7 +1,7 @@
-# passport-rakuten
-===========
+passport-rakuten - OAuth2.0 npm package for Rakuten OAuth
+================
 
-Oauth2.0 npm package for Rakuten OAuth
+[![NPM](https://nodei.co/npm/passport-rakuten.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/passport-rakuten/)
 
 ## Introduction
 
@@ -41,21 +41,21 @@ You can get this id from [Rakuten Web Service](http://webservice.rakuten.co.jp/)
 
     var passport = require('passport');
     var RakutenStrategy = require('passport-rakuten').RakutenStrategy;
-    
+
 	passport.use(new RakutenStrategy({
 	    clientID     : <RAKUTEN_APP_ID>,
 		clientSecret : <RAKUTEN_APP_SECRET>,
 		callbackURL  : <CALL_BACK_URL>,
 	}, function(accessToken, refreshtoken, profile, done){
 	    // With this accessToken you can access user profile data.
-		// In the case that accessToken is expired, you should 
+		// In the case that accessToken is expired, you should
 		// regain it with refreshToken. So you have to keep these token
-		// safely. done will get user profile data such as openid in YConnect	
+		// safely. done will get user profile data such as openid in YConnect
 	});
 
 ### Token Endpoint
 
-With this module, you don't have to do anything to get accessToken. 
+With this module, you don't have to do anything to get accessToken.
 As you see above, you have already obtain accessToken and refreshToken.
 So this process is not required with this module.
 
